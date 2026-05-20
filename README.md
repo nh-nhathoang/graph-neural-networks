@@ -15,9 +15,15 @@ This repository predicts the elastic modulus of planar lattice structures using 
 │   ├── data_processing.py        # Graph utilities, normalization, dataset split, duplicate checking
 │   ├── train_model.py            # Training loop
 │   └── evaluate_model.py         # Evaluation and prediction-vs-ground-truth visualization
+├── requirements.txt              # Python package dependencies
 ├── Hexagonal/                    # Dataset folder, not included in repository
 ├── Kagome/                       # Dataset folder, not included in repository
 ├── Demi-A/                       # Dataset folder, not included in repository
+    ├── Results.txt
+    └── inp_files/
+        ├── sample_1.inp
+        ├── sample_2.inp
+        └── ...
 ├── Demi-B/                       # Dataset folder, not included in repository
 ├── Demi-C/                       # Dataset folder, not included in repository
 └── README.md
@@ -48,7 +54,7 @@ The repository provides:
 Create or activate a Python environment, then install the required packages:
 
 ```bash
-pip3 install torch torch-geometric numpy matplotlib scikit-learn networkx
+pip3 install -r requirements.txt
 ```
 
 On macOS, use `python3` and `pip3` instead of `python` and `pip` if needed.
@@ -67,7 +73,7 @@ The default settings are:
 - batch size: 32
 - epochs: 200
 - learning rate: 0.001
-- train/test/validation split: 80% / 10% / 10%
+- train/validation/test split: 80% / 10% / 10%
 
 You can also change settings from the command line:
 
