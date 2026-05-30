@@ -113,23 +113,23 @@ def normalize_E(data_list):
 
     return data_list
 
-def prepare_dataset(data_list, batch_size, train_percentage=0.80, test_percentage=0.1):
+def prepare_dataset(data_list, batch_size, train_percentage=0.80, valid_percentage=0.1):
     dataset_size = len(data_list)
     train_size = int(train_percentage * dataset_size)
-    test_size = int(test_percentage * dataset_size)
-    valid_size = dataset_size - train_size - test_size
+    valid_size = int(valid_percentage * dataset_size)
+    test_size = dataset_size - train_size - valid_size
 
-    train_set, test_set, valid_set = random_split(data_list, [train_size, test_size, valid_size])
+    train_set, valid_set, test_set = random_split(data_list, [train_size, valid_size, test_size])
    
     print(f'Number of training graphs: {len(train_set)}')
+    print(f'Number of validation graphs: {len(valid_set)}')
     print(f'Number of test graphs: {len(test_set)}')
-    print(f'Number of vali graphs: {len(valid_set)}')
     
     train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True)
-    test_loader = DataLoader(test_set, batch_size=batch_size, shuffle=False)
     valid_loader = DataLoader(valid_set, batch_size=batch_size, shuffle=False)
-
-    return train_loader, test_loader, valid_loader
+    test_loader = DataLoader(test_set, batch_size=batch_size, shuffle=False)
+    
+    return train_loader, valid_loader, test_loader
 
 def check_duplicate_graphs(dataset):
     seen = {}

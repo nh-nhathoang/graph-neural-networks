@@ -158,13 +158,13 @@ def plot_dataset(dataset, output_dir):
     plt.close()
 
 
-def plot_losses(train_losses, test_losses, epoch_num, output_dir):
+def plot_losses(train_losses, valid_losses, epoch_num, output_dir):
     plt.figure(figsize=(5, 5), dpi=400)
     plt.rcParams["font.serif"] = ["Times New Roman"]
     plt.rcParams["font.size"] = 12
 
     plt.plot(np.array(train_losses), label="Train")
-    plt.plot(np.array(test_losses), label="Validation")
+    plt.plot(np.array(valid_losses), label="Validation")
     plt.legend()
     plt.xlabel("Epoch")
     plt.ylabel("MSE Loss")
@@ -210,8 +210,8 @@ def main():
     print(f"Graphs are undirected (after conversion): {all_undirected_after}")
 
     dataset = normalize_planar_info(dataset)
-    train_loader, test_loader, valid_loader = prepare_dataset(
-        dataset, batch_size, train_percentage=0.80, test_percentage=0.1
+    train_loader, valid_loader, test_loader = prepare_dataset(
+        dataset, batch_size, train_percentage=0.80, valid_percentage=0.1
     )
 
     plot_dataset(dataset, args.save_model_dir)
@@ -245,12 +245,12 @@ def main():
     num_params = sum(p.numel() for p in model.parameters())
     print("Number of parameters:", num_params)
 
-    train_losses, test_losses, R2_trainings, R2_tests, best_state_dict = train_model(
-        model, train_loader, test_loader, criterion, 
+    train_losses, valid_losses, R2_trainings, R2_valids, best_state_dict = train_model(
+        model, train_loader, valid_loader, criterion, 
         optimizer, scheduler, device=device, num_epochs=epoch_num,
     )
 
-    plot_losses(train_losses, test_losses, epoch_num, args.save_model_dir)
+    plot_losses(train_losses, valid_losses, epoch_num, args.save_model_dir)
 
     best_model_path = os.path.join(args.save_model_dir, f"epoch_{args.epoch_num}.pt")
     torch.save(best_state_dict, best_model_path)
@@ -259,8 +259,8 @@ def main():
     model.load_state_dict(best_state_dict)
 
     evaluate_model(model, train_loader, device, args.cover_interval, overlap, args.save_model_dir, split_name="train")
-    evaluate_model(model, test_loader, device, args.cover_interval, overlap, args.save_model_dir, split_name="validation")
-    evaluate_model(model, valid_loader, device, args.cover_interval, overlap, args.save_model_dir, split_name="test")
+    evaluate_model(model, valid_loader, device, args.cover_interval, overlap, args.save_model_dir, split_name="validation")
+    evaluate_model(model, test_loader, device, args.cover_interval, overlap, args.save_model_dir, split_name="test")
 
 
 if __name__ == "__main__":
