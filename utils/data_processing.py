@@ -1,9 +1,7 @@
 import torch
 from torch_geometric.loader import DataLoader
-from torch.utils.data import Dataset, random_split
-from itertools import permutations
+from torch.utils.data import random_split
 import networkx as nx
-from torch_geometric.data import Data
 from sklearn.preprocessing import StandardScaler
 import numpy as np
 
@@ -85,18 +83,28 @@ def feature_engineering(data_list):
 
     return engineered_data_list
 
-def normalize_planar_info(data_list):
-    for data in data_list:
-        num_features = data.x.shape[1]
-        for i in range(0, num_features):
+def normalize_planar_info(training_list, validation_list = None, test_list = None):
+    all_train_x = torch.cat([data.x for data in training_list], dim=0)
+    num_features = all_train_x.shape[1]
+    
+    global_mins = torch.min(all_train_x, dim=0)[0]
+    global_maxs = torch.max(all_train_x, dim=0)[0]
 
-            min_val = torch.min(data.x[:, i]).item()
-            max_val = torch.max(data.x[:, i]).item()
-            
-            if max_val - min_val != 0:
-                data.x[:, i] = (data.x[:, i] - min_val) / (max_val - min_val)
+    def scale_split(data_list):
+        for data in data_list:
+            for i in range(num_features):
+                denom = global_maxs[i] - global_mins[i]
+                if denom != 0:
+                    data.x[:, i] = (data.x[:, i] - global_mins[i]) / denom
+        return data_list
+    
+    training_list = scale_split(training_list)
+    if validation_list is not None:
+        validation_list = scale_split(validation_list)
+    if test_list is not None:
+        test_list = scale_split(test_list)
 
-    return data_list
+    return training_list, validation_list, test_list
 
 
 def normalize_E(data_list):

@@ -1,17 +1,13 @@
 import argparse
 import os
-from glob import glob
 
 import numpy as np
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 import torch.optim as optim
 import matplotlib.pyplot as plt
 
-from torch.nn import Linear
 from torch_geometric.data import Data
-from torch_geometric.nn import TransformerConv, global_mean_pool
 
 from utils.data_processing import *
 from utils.architecture import GIN, Transformer
@@ -209,10 +205,20 @@ def main():
     all_undirected_after = all(is_undirected(data) for data in dataset)
     print(f"Graphs are undirected (after conversion): {all_undirected_after}")
 
-    dataset = normalize_planar_info(dataset)
-    train_loader, valid_loader, test_loader = prepare_dataset(
-        dataset, batch_size, train_percentage=0.80, valid_percentage=0.1
-    )
+    dataset_size = len(dataset)
+    train_size = int(0.80 * dataset_size)
+    valid_size = int(0.10 * dataset_size)
+    test_size = dataset_size - train_size - valid_size
+    
+    train_set, valid_set, test_set = random_split(dataset, [train_size, valid_size, test_size])
+    
+    # Extract lists to normalize safely using Training criteria
+    train_list, valid_list, test_list = list(train_set), list(valid_set), list(test_set)
+    train_list, valid_list, test_list = normalize_planar_info(train_list, valid_list, test_list)
+
+    train_loader = DataLoader(train_list, batch_size=batch_size, shuffle=True)
+    valid_loader = DataLoader(valid_list, batch_size=batch_size, shuffle=False)
+    test_loader = DataLoader(test_list, batch_size=batch_size, shuffle=False)
 
     plot_dataset(dataset, args.save_model_dir)
 

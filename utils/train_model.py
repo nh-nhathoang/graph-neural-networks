@@ -44,11 +44,8 @@ def train_model(model, train_loader, valid_loader, criterion, optimizer, schedul
         R2_train = r2_score(E_whole, out_whole)  
         R2_trainings.append(R2_train)  
         
-        train_losses.append(train_loss / total_graphs)
         epoch_loss = train_loss / total_graphs
-        
-        scheduler.step(torch.tensor(epoch_loss).float())
-        current_lr = scheduler.get_last_lr()[0]
+        train_losses.append(epoch_loss)
 
         model.eval()
         with torch.no_grad():
@@ -76,6 +73,9 @@ def train_model(model, train_loader, valid_loader, criterion, optimizer, schedul
             valid_loss = valid_loss / total_graphs
             valid_losses.append(valid_loss)  
         
+        scheduler.step(valid_loss)  # Step the scheduler based on validation loss
+        current_lr = scheduler.get_last_lr()[0]
+
         if valid_loss < best_loss:
             best_loss = valid_loss
             best_state_dict = copy.deepcopy(model.state_dict())

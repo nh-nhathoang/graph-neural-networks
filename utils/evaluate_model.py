@@ -1,9 +1,7 @@
 import matplotlib.pyplot as plt
 import torch
-from torch.utils.data import DataLoader, random_split
 from sklearn.metrics import r2_score
 import numpy as np
-from .data_processing import make_undirected
 
 def visualize_performance(true_E, pred_E, R2, cover_interval, overlap, save_dir):
     plt.rcParams['font.size'] = 12

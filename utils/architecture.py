@@ -1,8 +1,7 @@
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 from torch.nn import Linear, Sequential, BatchNorm1d, ReLU, Dropout
-from torch_geometric.nn import GINConv, CGConv, GATv2Conv, TransformerConv, NNConv
+from torch_geometric.nn import GINConv, TransformerConv
 from torch_geometric.nn import global_add_pool, global_mean_pool
 
 class GIN(torch.nn.Module):
