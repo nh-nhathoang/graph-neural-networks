@@ -32,7 +32,7 @@ def train_model(model, train_loader, valid_loader, criterion, optimizer, schedul
             nn.utils.clip_grad_norm_(model.parameters(), max_norm=1)  # Gradient clipping
             optimizer.step()
             
-            num_graphs_in_batch = torch.unique(data.batch).size(0)
+            num_graphs_in_batch = data.num_graphs
             train_loss += loss.item() * num_graphs_in_batch
             total_graphs += num_graphs_in_batch
             
@@ -58,7 +58,7 @@ def train_model(model, train_loader, valid_loader, criterion, optimizer, schedul
                 pred = model(data.x.to(device), data.edge_index.long().to(device), data.batch.to(device))
                 data.E = data.E.to(torch.float32)
                 
-                num_graphs_in_batch = torch.unique(data.batch).size(0)
+                num_graphs_in_batch = data.num_graphs
                 valid_loss += criterion(pred, data.E.to(device)).item() * num_graphs_in_batch
                 total_graphs += num_graphs_in_batch
                 

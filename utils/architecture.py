@@ -44,7 +44,7 @@ class GIN(torch.nn.Module):
         #h = F.dropout(h, p=0.0, training=self.training)
         h = self.lin4(h)
         
-        return h.squeeze()
+        return h.squeeze(-1)
 
 class Transformer(torch.nn.Module):
     def __init__(self, dim_h, node_feature, heads=4):
@@ -78,4 +78,4 @@ class Transformer(torch.nn.Module):
         #h = F.dropout(h, p=0.0, training=self.training)
         h = self.lin3(h)
 
-        return h.squeeze()
+        return h.squeeze(-1) 

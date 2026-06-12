@@ -54,12 +54,7 @@ def load_inp_data(file_path, label):
 
         if element_section:
             parts = line.split(",")
-            if (
-                len(parts) >= 3
-                and parts[0].strip().isdigit()
-                and parts[1].strip().isdigit()
-                and parts[2].strip().isdigit()
-            ):
+            if (len(parts) >= 3 and parts[0].strip().isdigit() and parts[1].strip().isdigit() and parts[2].strip().isdigit()):
                 start = int(parts[1].strip()) - 1
                 end = int(parts[2].strip()) - 1
 

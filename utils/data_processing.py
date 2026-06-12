@@ -106,21 +106,6 @@ def normalize_planar_info(training_list, validation_list = None, test_list = Non
 
     return training_list, validation_list, test_list
 
-
-def normalize_E(data_list):
-
-    # Assume `data_list` is your list of graph data objects
-    E_vals = np.array([data.E for data in data_list]).reshape(-1, 1)  # shape: (n, 1)
-
-    # Fit scaler
-    scaler = StandardScaler()
-    E_scaled = scaler.fit_transform(E_vals)
-
-    for i, data in enumerate(data_list):
-        data.E = float(E_scaled[i])
-
-    return data_list
-
 def prepare_dataset(data_list, batch_size, train_percentage=0.80, valid_percentage=0.1):
     dataset_size = len(data_list)
     train_size = int(train_percentage * dataset_size)
