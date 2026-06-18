@@ -172,7 +172,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--data_dir", type=str, default=".", help="Folder containing Hexagonal, Kagome, Demi-A, Demi-B, and Demi-C")
     parser.add_argument("--batch_num", type=int, default=32, help="Batch size")
-    parser.add_argument("--epoch_num", type=int, default=150, help="Epoch number")
+    parser.add_argument("--epoch_num", type=int, default=200, help="Epoch number")
     parser.add_argument("--cover_interval", type=int, default=20, help="Cover interval")
     parser.add_argument("--overlap", type=float, default=0.3, help="Cover overlap")
     parser.add_argument("--save_model_dir", type=str, default="./saved_model", help="Output directory")
