@@ -22,10 +22,10 @@ def train_model(model, train_loader, valid_loader, criterion, optimizer, schedul
         E_whole = []
         
         for data in train_loader:
+            optimizer.zero_grad()
             pred = model(data.x.to(device), data.edge_index.long().to(device), data.batch.to(device))
             data.E = data.E.to(torch.float32)
             
-            optimizer.zero_grad()
             loss = criterion(pred, data.E.to(device))
             
             loss.backward()
