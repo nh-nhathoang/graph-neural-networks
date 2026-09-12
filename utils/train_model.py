@@ -14,6 +14,7 @@ def train_model(model, train_loader, valid_loader, criterion, optimizer, schedul
     best_state_dict = None
     best_loss = float('inf')
     patience, epoch_without_improvement = 15, 0
+    min_delta = 1e-5 #ignore improvement smaller than this, treat it as noise
     
     for epoch in range(num_epochs):
         model.train()
@@ -77,7 +78,7 @@ def train_model(model, train_loader, valid_loader, criterion, optimizer, schedul
         scheduler.step(valid_loss)  # Step the scheduler based on validation loss
         current_lr = scheduler.get_last_lr()[0]
 
-        if valid_loss < best_loss:
+        if valid_loss < best_loss - min_delta:
             best_loss = valid_loss
             best_state_dict = copy.deepcopy(model.state_dict())
             epoch_without_improvement = 0
@@ -87,8 +88,8 @@ def train_model(model, train_loader, valid_loader, criterion, optimizer, schedul
         print(f'Epoch [{epoch+1}], LR [{current_lr}], Loss[Train: {epoch_loss:.3f}, Valid: {valid_loss:.3f}], R2[Train: {R2_train:.3f}, Valid: {R2_valid:.3f}]')
 
         if epoch_without_improvement >= patience:
-                    print(f'No validation loss improvement for {patience} epochs, stop at epoch {epoch+1}.')
-                    break
+            print(f'No validation loss improvement for {patience} epochs, stop at epoch {epoch+1}.')
+            break
         
     print(f'Final Valid Loss: {valid_losses[-1]:.4f}')
     
