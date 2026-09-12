@@ -39,11 +39,13 @@ def evaluate_model(model, loader, device, cover_interval, overlap, save_dir, spl
     E_whole = np.concatenate(E_whole, axis=0)
 
     R2 = r2_score(E_whole, E_pred_whole)
+    bias = np.mean(E_pred_whole - E_whole)
 
     print(f'{split_name.capitalize()} R2 for E: {R2}')
+    print(f'{split_name.capitalize()} Bias (mean residual): {bias:.4f}')
 
     # Return values if needed later
     visualize_performance(E_whole, E_pred_whole, R2, cover_interval, overlap, save_dir)
     plt.savefig(f"{save_dir}/{split_name}_prediction_vs_ground_truth.png")
-    plt.close()
-    return R2
+    plt.show()
+    return R2, bias
