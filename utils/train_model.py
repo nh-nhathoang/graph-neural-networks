@@ -14,7 +14,7 @@ def train_model(model, train_loader, valid_loader, criterion, optimizer, schedul
     best_state_dict = None
     best_loss = float('inf')
     patience, epoch_without_improvement = 15, 0
-    min_delta = 1e-5 #ignore improvement smaller than this, treat it as noise
+    min_delta = 1e-3 #ignore improvement smaller than this, treat it as noise
     
     for epoch in range(num_epochs):
         model.train()
